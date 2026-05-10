@@ -5,29 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Anniversary, Sayang!</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Menggunakan font-awesome versi terbaru -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500;700&display=swap');
 
         body {
             background: linear-gradient(to bottom, #ffe4e6, #fecaca);
             font-family: 'Quicksand', sans-serif;
-            overflow-x: hidden;
+            overflow: hidden;
             touch-action: manipulation;
-            position: relative;
-            min-height: 100vh;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .font-romantic {
             font-family: 'Dancing Script', cursive;
         }
 
-        /* Animasi Hati Terbang Latar Belakang (BG) */
+        /* Slide System */
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.9) translateY(20px);
+            z-index: 10;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Animasi Hati Latar Belakang - Intensitas Tinggi */
         .bg-heart {
             position: fixed;
             top: 100%;
-            color: rgba(251, 113, 133, 0.3);
+            /* Opasitas ditingkatkan dari 0.3 ke 0.5 agar lebih terlihat */
+            color: rgba(251, 113, 133, 0.5); 
             pointer-events: none;
             z-index: 0;
             animation: bgFloat 10s linear infinite;
@@ -35,30 +61,15 @@
 
         @keyframes bgFloat {
             0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.5; }
+            20% { opacity: 0.7; }
             100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Animasi Hati Interaktif (Pelukan) */
-        .heart-float {
-            position: fixed;
-            color: #fb7185;
-            z-index: 100;
-            pointer-events: none;
-            animation: floatUp 4s ease-out forwards;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-20vh) scale(2) rotate(360deg); opacity: 0; }
-        }
-
-        /* Container Amplop */
+        /* Amplop Style */
         .envelope-wrapper {
             position: relative;
             width: 280px;
             height: 180px;
-            margin: 120px auto 80px auto;
             cursor: pointer;
             perspective: 1000px;
         }
@@ -74,8 +85,7 @@
 
         .flap {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             width: 0; height: 0;
             border-left: 140px solid transparent;
             border-right: 140px solid transparent;
@@ -83,7 +93,6 @@
             transform-origin: top;
             transition: transform 0.4s ease-in-out 0.4s, z-index 0.1s 0.4s;
             z-index: 40;
-            backface-visibility: hidden;
         }
 
         .envelope-wrapper.open .flap {
@@ -94,62 +103,38 @@
 
         .envelope-front {
             position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 30;
-            pointer-events: none;
+            bottom: 0; width: 100%; height: 100%;
+            z-index: 30; pointer-events: none;
         }
 
         .envelope-front::before {
-            content: "";
-            position: absolute;
-            width: 0; height: 0;
-            border-top: 90px solid transparent;
-            border-bottom: 90px solid transparent;
+            content: ""; position: absolute; left: 0; top: 0;
+            border-top: 90px solid transparent; border-bottom: 90px solid transparent;
             border-left: 140px solid #f43f5e;
-            left: 0; top: 0;
         }
         
         .envelope-front::after {
-            content: "";
-            position: absolute;
-            width: 0; height: 0;
-            border-top: 90px solid transparent;
-            border-bottom: 90px solid transparent;
+            content: ""; position: absolute; right: 0; top: 0;
+            border-top: 90px solid transparent; border-bottom: 90px solid transparent;
             border-right: 140px solid #f43f5e;
-            right: 0; top: 0;
         }
 
         .envelope-bottom {
-            position: absolute;
-            bottom: 0;
-            width: 0; height: 0;
-            border-left: 140px solid transparent;
-            border-right: 140px solid transparent;
+            position: absolute; bottom: 0;
+            border-left: 140px solid transparent; border-right: 140px solid transparent;
             border-bottom: 100px solid #fb7185;
-            z-index: 31;
-            border-radius: 0 0 12px 12px;
+            z-index: 31; border-radius: 0 0 12px 12px;
         }
 
         .letter {
-            position: absolute;
-            bottom: 5px;
-            left: 15px;
-            width: 250px;
-            height: 160px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: absolute; bottom: 5px; left: 15px;
+            width: 250px; height: 160px;
+            background: white; padding: 20px; border-radius: 8px;
+            z-index: 10; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
             text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: transform 0.5s ease-in-out, z-index 0s 0.5s;
-            will-change: transform;
         }
 
         .envelope-wrapper.open .letter {
@@ -158,162 +143,235 @@
             transition: transform 0.5s ease-out 0.4s, z-index 0s 0.4s;
         }
 
+        /* Foto Flip */
         .card-container {
             perspective: 1000px;
-            width: 100%;
-            max-width: 280px;
+            width: 280px;
             height: 350px;
-            margin: 0 auto;
         }
 
         .card-inner {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
             cursor: pointer;
         }
 
-        .card-container.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
+        .flipped .card-inner { transform: rotateY(180deg); }
 
         .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 15px;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; background: white; padding: 15px;
+            border: 8px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .card-back { transform: rotateY(180deg); background: #fff1f2; }
+
+        .photo-img { width: 100%; height: 85%; object-fit: cover; border-radius: 8px; }
+
+        /* Navigasi */
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #e11d48;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .nav-btn:active { transform: scale(0.95); }
+
+        /* Progress Dots */
+        .progress-dots {
+            position: fixed;
+            top: 2rem;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            padding: 15px;
-            border: 8px solid white;
+            gap: 0.5rem;
+            z-index: 100;
         }
 
-        .card-back {
-            transform: rotateY(180deg);
-            background: #fff1f2;
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(225, 29, 72, 0.2);
+            transition: all 0.3s;
         }
 
-        .photo-img {
-            width: 100%;
-            height: 85%;
-            object-fit: cover;
-            border-radius: 8px;
+        .dot.active {
+            width: 24px;
+            border-radius: 4px;
+            background: #e11d48;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-10 px-4">
+<body>
 
-    <!-- Kontainer Hati Latar Belakang -->
     <div id="bg-hearts-container"></div>
 
-    <!-- Header -->
-    <header class="text-center mb-6 z-10">
-        <h1 class="text-4xl font-romantic text-rose-600 mb-2">Happy 2 Month Anniversary!</h1>
-        <p class="text-rose-400 italic text-sm">"Kejutan spesial buat bibibbb..."</p>
-    </header>
+    <!-- Progress Dots -->
+    <div class="progress-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
 
-    <!-- Amplop Interaktif -->
-    <section class="mb-24 z-10">
-        <div class="envelope-wrapper" onclick="toggleEnvelope(this)">
+    <!-- Slide 1: Welcome -->
+    <div class="slide active" id="slide-0">
+        <div class="text-center">
+            <h1 class="text-5xl font-romantic text-rose-600 mb-4">Hai Sayang! ❤️</h1>
+            <p class="text-rose-500 mb-8 max-w-xs mx-auto">Selamat datang di perjalanan kecil kita hari ini. Aku punya sesuatu buat kamu...</p>
+            <button onclick="nextSlide()" class="nav-btn">Buka Kejutan <i class="fas fa-chevron-right ml-2"></i></button>
+        </div>
+    </div>
+
+    <!-- Slide 2: Envelope -->
+    <div class="slide" id="slide-1">
+        <header class="text-center mb-8">
+            <h2 class="text-3xl font-romantic text-rose-600">Surat Untukmu</h2>
+        </header>
+        <div class="envelope-wrapper" id="mainEnvelope" onclick="toggleEnvelope(this)">
             <div class="flap"></div>
             <div class="envelope-back">
                 <div class="letter">
-                    <p class="font-bold text-rose-600 mb-1 text-sm">Halo Sayang!</p>
-                    <p class="text-[11px] text-gray-500 leading-tight">Terima kasih sudah bertahan sejauh ini. Aku sangat beruntung memilikimu di hidupku!</p>
+                    <p class="font-bold text-rose-600 mb-2 text-sm">Halo Bibibb!</p>
+                    <p class="text-[11px] text-gray-500 leading-relaxed">Terima kasih sudah bertahan sejauh ini. Aku sangat beruntung memilikimu di hidupku!</p>
                     <p class="mt-4 font-romantic text-2xl text-rose-500">I Love You ❤️</p>
                 </div>
             </div>
             <div class="envelope-front"></div>
             <div class="envelope-bottom"></div>
         </div>
-        <p class="text-center -mt-8 text-rose-500 text-xs animate-bounce font-bold">Tekan Amplopnya ✨</p>
-    </section>
+        <p class="text-rose-500 text-xs animate-bounce font-bold mt-4 mb-8">Tekan amplopnya ya ✨</p>
+        <div class="flex gap-4">
+            <button onclick="prevSlide()" class="text-rose-400 font-bold px-4">Kembali</button>
+            <button onclick="nextSlide()" class="nav-btn">Lanjut <i class="fas fa-chevron-right ml-2"></i></button>
+        </div>
+    </div>
 
-    <!-- Foto Kenangan -->
-    <section class="mb-10 w-full z-10">
+    <!-- Slide 3: Photo -->
+    <div class="slide" id="slide-2">
+        <h2 class="text-3xl font-romantic text-rose-600 mb-6 text-center">My Favorite Person ✨</h2>
         <div class="card-container" id="photoCard" onclick="toggleFlip()">
             <div class="card-inner">
                 <div class="card-front">
-                    <div class="w-full h-full border-2 border-dashed border-rose-200 flex flex-col items-center justify-center p-4 rounded-xl">
-                        <i class="fas fa-heart text-5xl text-rose-300 mb-4 animate-pulse"></i>
-                        <p class="text-rose-500 font-bold text-center text-sm">Buka Kotak Cinta</p>
-                    </div>
+                    <i class="fas fa-heart text-5xl text-rose-300 mb-4 animate-pulse"></i>
+                    <p class="text-rose-500 font-bold text-center text-sm uppercase tracking-widest">Klik Untuk Melihat</p>
                 </div>
                 <div class="card-back">
-                    <img src="https://i.imgur.com/o35TnOpl.jpg" alt="Kenangan" class="photo-img shadow-sm">
-                    <p class="font-romantic text-lg text-rose-600 mt-2">PACAR KU YANG CANTIK✨</p>
+                    <img src="https://i.imgur.com/o35TnOpl.jpg" alt="Kenangan" class="photo-img">
+                    <p class="font-romantic text-xl text-rose-600 mt-2">CANTIK BANGETTT! 😍</p>
                 </div>
             </div>
         </div>
-        <p class="text-center mt-4 text-rose-400 text-xs">Klik kotak di atas ☝️</p>
-    </section>
-
-    <!-- Penghitung Waktu -->
-    <section class="w-full max-w-sm bg-white/60 backdrop-blur-md p-6 rounded-3xl shadow-xl mb-10 text-center z-10 border border-white">
-        <h3 class="text-rose-600 font-bold mb-4 uppercase tracking-tighter text-[10px]">Kita Sudah Bersama Selama</h3>
-        <div class="grid grid-cols-4 gap-2">
-            <div class="bg-rose-50 py-3 rounded-2xl border border-rose-100">
-                <span id="days" class="block text-xl font-bold text-rose-600">0</span>
-                <span class="text-[8px] uppercase text-rose-400 font-bold">Hari</span>
-            </div>
-            <div class="bg-rose-50 py-3 rounded-2xl border border-rose-100">
-                <span id="hours" class="block text-xl font-bold text-rose-600">0</span>
-                <span class="text-[8px] uppercase text-rose-400 font-bold">Jam</span>
-            </div>
-            <div class="bg-rose-50 py-3 rounded-2xl border border-rose-100">
-                <span id="minutes" class="block text-xl font-bold text-rose-600">0</span>
-                <span class="text-[8px] uppercase text-rose-400 font-bold">Menit</span>
-            </div>
-            <div class="bg-rose-50 py-3 rounded-2xl border border-rose-100">
-                <span id="seconds" class="block text-xl font-bold text-rose-600">0</span>
-                <span class="text-[8px] uppercase text-rose-400 font-bold">Detik</span>
-            </div>
+        <div class="flex gap-4 mt-8">
+            <button onclick="prevSlide()" class="text-rose-400 font-bold px-4">Kembali</button>
+            <button onclick="nextSlide()" class="nav-btn">Selanjutnya <i class="fas fa-chevron-right ml-2"></i></button>
         </div>
-    </section>
-
-    <!-- Tombol Aksi -->
-    <section class="flex flex-col gap-4 w-full max-w-xs z-10">
-        <button onclick="bigPelukan()" class="bg-rose-600 text-white py-4 rounded-2xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2 font-black">
-            <i class="fas fa-heart-circle-check"></i> KIRIM PELUKAN VIRTUAL
-        </button>
-        <button onclick="showSurprise()" class="bg-white text-rose-500 border-2 border-rose-500 py-3 rounded-2xl shadow-md transition transform active:scale-95 flex items-center justify-center gap-2 font-bold text-sm">
-            <i class="fas fa-star text-xs"></i> PESAN DARI BRYAN
-        </button>
-    </section>
-
-    <!-- Overlay Kejutan -->
-    <div id="surprise-overlay" class="fixed inset-0 bg-rose-600/95 z-[200] hidden flex-col items-center justify-center p-10 text-center text-white">
-        <div class="animate-bounce mb-6">
-            <i class="fas fa-heart text-6xl"></i>
-        </div>
-        <h2 class="text-4xl font-romantic mb-4">Kamu segalanya buat aku!</h2>
-        <p class="mb-10 text-sm leading-relaxed">Terima kasih sudah memilihku setiap hari. Aku harap kedepannya kita masih bisa selalu bareng dan kamuu jugaa enggak bosenn sama akuu. FOREVER I WILL LOVEE YOUU SAYANGKUU BIBBIBBB!</p>
-        <button onclick="hideSurprise()" class="bg-white text-rose-600 px-10 py-3 rounded-full font-black shadow-2xl uppercase text-xs">Love You!</button>
     </div>
 
-    <footer class="mt-10 text-rose-400 text-[10px] pb-10">
-        @Dibuat oleh pacar tercintamu bryan
-    </footer>
+    <!-- Slide 4: Countdown -->
+    <div class="slide" id="slide-3">
+        <h3 class="text-rose-600 font-bold mb-6 uppercase tracking-widest text-xs text-center">Waktu Yang Sudah Kita Lewati</h3>
+        <div class="w-full max-w-sm bg-white/60 backdrop-blur-md p-6 rounded-3xl shadow-xl text-center mb-8 border border-white">
+            <div class="grid grid-cols-4 gap-2">
+                <div class="bg-rose-50 py-3 rounded-2xl">
+                    <span id="days" class="block text-xl font-bold text-rose-600">0</span>
+                    <span class="text-[8px] uppercase text-rose-400 font-bold">Hari</span>
+                </div>
+                <div class="bg-rose-50 py-3 rounded-2xl">
+                    <span id="hours" class="block text-xl font-bold text-rose-600">0</span>
+                    <span class="text-[8px] uppercase text-rose-400 font-bold">Jam</span>
+                </div>
+                <div class="bg-rose-50 py-3 rounded-2xl">
+                    <span id="minutes" class="block text-xl font-bold text-rose-600">0</span>
+                    <span class="text-[8px] uppercase text-rose-400 font-bold">Menit</span>
+                </div>
+                <div class="bg-rose-50 py-3 rounded-2xl">
+                    <span id="seconds" class="block text-xl font-bold text-rose-600">0</span>
+                    <span class="text-[8px] uppercase text-rose-400 font-bold">Detik</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="prevSlide()" class="text-rose-400 font-bold px-4">Kembali</button>
+            <button onclick="nextSlide()" class="nav-btn">Terakhir... <i class="fas fa-chevron-right ml-2"></i></button>
+        </div>
+    </div>
+
+    <!-- Slide 5: Finale -->
+    <div class="slide" id="slide-4">
+        <div class="text-center">
+            <h1 class="text-4xl font-romantic text-rose-600 mb-6">Happy 2 Month Anniversary!</h1>
+            <p class="text-gray-600 text-sm mb-8 leading-relaxed px-4">
+                Terima kasih sudah memilihku setiap hari. Aku harap kedepannya kita masih bisa selalu bareng dan kamuu jugaa enggak bosenn sama akuu. <br><br>
+                <span class="font-bold text-rose-500 uppercase">FOREVER I WILL LOVE YOU BIBIBBB!</span>
+            </p>
+            
+            <div class="flex flex-col gap-3 w-full max-w-xs mx-auto">
+                <!-- Tombol Pelukan dihapus dan diganti tombol Ulang -->
+                <button onclick="goToSlide(0)" class="bg-rose-600 text-white py-4 rounded-2xl shadow-xl flex items-center justify-center gap-2 font-black transition active:scale-95 uppercase">
+                    <i class="fas fa-rotate-right"></i> Ulang Dari Awal ❤️
+                </button>
+            </div>
+        </div>
+        <footer class="mt-12 text-rose-300 text-[10px]">
+            Dibuat oleh pacar tercintamu bryan
+        </footer>
+    </div>
 
     <script>
-        // Tanggal Pertemuan: 14 Maret 2026 jam 22.38
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const envelope = document.getElementById('mainEnvelope');
+        const photoCard = document.getElementById('photoCard');
+
+        function updateSlides() {
+            // Tutup kembali amplop dan foto setiap kali pindah slide
+            if (envelope) envelope.classList.remove('open');
+            if (photoCard) photoCard.classList.remove('flipped');
+
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlides();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlides();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlides();
+        }
+
+        // --- Countdown Logic ---
         const startDate = new Date(2026, 2, 14, 22, 38); 
         
-        // Waktu Sekarang sesuai input: 23 April 2026 jam 21.08
-        // Kita gunakan Date.now() untuk pergerakan real-time, 
-        // namun perhitungan awal akan dimulai dari titik waktu yang kamu berikan.
         function updateCountdown() {
             const now = new Date();
             const diff = now - startDate;
-            
-            // Logika agar tidak menampilkan angka negatif jika tanggal belum lewat
             const positiveDiff = diff < 0 ? 0 : diff;
 
             const days = Math.floor(positiveDiff / (1000 * 60 * 60 * 24));
@@ -326,83 +384,33 @@
             document.getElementById('minutes').innerText = minutes;
             document.getElementById('seconds').innerText = seconds;
         }
-
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        // Fungsi membuat hati di latar belakang
-        function createBgHearts() {
+        // --- Interaction Logic ---
+        function toggleEnvelope(el) { el.classList.toggle('open'); }
+        function toggleFlip() { photoCard.classList.toggle('flipped'); }
+
+        // Background Hearts - Intensitas Ditingkatkan
+        function spawnBgHearts() {
             const container = document.getElementById('bg-hearts-container');
-            const heartCount = 15; 
-            
-            for (let i = 0; i < heartCount; i++) {
-                spawnBgHeart(container);
+            // Menambah jumlah hati dari 15 ke 40 untuk efek yang lebih ramai
+            for (let i = 0; i < 40; i++) {
+                const heart = document.createElement('i');
+                heart.classList.add('fas', 'fa-heart', 'bg-heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 25 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 5 + 7) + 's';
+                heart.style.animationDelay = (Math.random() * 15) + 's';
+                
+                // Variasi warna agar lebih terlihat
+                const colors = ['rgba(251, 113, 133, 0.5)', 'rgba(244, 63, 94, 0.4)', 'rgba(225, 29, 72, 0.3)'];
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                container.appendChild(heart);
             }
         }
-
-        function spawnBgHeart(container) {
-            const heart = document.createElement('i');
-            heart.classList.add('fas', 'fa-heart', 'bg-heart');
-            
-            const startPos = Math.random() * 100;
-            const delay = Math.random() * 10;
-            const size = (Math.random() * 20 + 10) + 'px';
-            const duration = (Math.random() * 5 + 7) + 's';
-            
-            heart.style.left = startPos + 'vw';
-            heart.style.fontSize = size;
-            heart.style.animationDuration = duration;
-            heart.style.animationDelay = delay + 's';
-            
-            container.appendChild(heart);
-        }
-
-        createBgHearts();
-
-        function toggleEnvelope(el) {
-            el.classList.toggle('open');
-        }
-
-        function toggleFlip() {
-            document.getElementById('photoCard').classList.toggle('flipped');
-        }
-
-        function showSurprise() {
-            document.getElementById('surprise-overlay').classList.remove('hidden');
-            document.getElementById('surprise-overlay').classList.add('flex');
-            bigPelukan();
-        }
-
-        function hideSurprise() {
-            document.getElementById('surprise-overlay').classList.add('hidden');
-            document.getElementById('surprise-overlay').classList.remove('flex');
-        }
-
-        function bigPelukan() {
-            const totalHearts = 150;
-            for (let i = 0; i < totalHearts; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('i');
-                    const icons = ['fa-heart', 'fa-heart-circle-bolt', 'fa-heart-pulse', 'fa-heart-circle-check'];
-                    const randomIcon = icons[Math.floor(Math.random() * icons.length)];
-                    
-                    heart.classList.add('fas', randomIcon, 'heart-float');
-                    heart.style.left = Math.random() * 100 + 'vw';
-                    
-                    const size = (Math.random() * 40 + 15) + 'px';
-                    heart.style.fontSize = size;
-                    
-                    const duration = (Math.random() * 2 + 1.5) + 's';
-                    heart.style.animationDuration = duration;
-                    
-                    const colors = ['#fb7185', '#f43f5e', '#e11d48', '#ffffff', '#ff85a2', '#ff4d6d'];
-                    heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    document.body.appendChild(heart);
-                    setTimeout(() => heart.remove(), 4000);
-                }, i * 15);
-            }
-        }
+        spawnBgHearts();
     </script>
 </body>
 </html>
